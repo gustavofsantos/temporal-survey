@@ -13,6 +13,9 @@ services:
 
     volumes:
       - ..:/workspace:cached
+    
+    environment:
+      TEMPORAL_ADDR: temporal:7233
       
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity

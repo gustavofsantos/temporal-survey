@@ -4,7 +4,6 @@ import type * as activities from "./activities";
 const { storeSurveyAnswer, sendConfirmationEmail } = wf.proxyActivities<
   typeof activities
 >({
-  taskQueue: "survey",
   startToCloseTimeout: "1 minute",
 });
 

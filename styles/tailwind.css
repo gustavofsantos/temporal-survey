@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+  @apply text-xl font-bold mb-4;
+}
+
+article {
+  @apply w-full md:max-w-lg lg:max-w-xl;
+}
+
+form {
+  @apply flex flex-col space-y-4 w-full;
+}
+
+input {
+  @apply p-2 rounded-lg border border-gray-300 outline-none focus:outline-blue-400;
+}
+
+button {
+  @apply p-2 rounded-lg font-bold;
+}
+
+button[type="submit"] {
+  @apply bg-blue-700 text-blue-50;
+}
