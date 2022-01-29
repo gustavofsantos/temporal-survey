@@ -30,11 +30,12 @@
 		"prisma.prisma",
 		"bradlc.vscode-tailwindcss",
 		"hbenl.vscode-test-explorer",
-		"ms-vscode.test-adapter-converter"
+		"ms-vscode.test-adapter-converter",
+		"ms-azuretools.vscode-docker"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3000, 5432, 9200, 7233, 8088],
+	"forwardPorts": [3000, 5432, 7233, 8088],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "npm install",

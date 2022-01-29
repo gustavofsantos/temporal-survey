@@ -18,15 +18,22 @@ services:
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
+    networks:
+      - app-network
+    
+    ports:
+      - 3000:3000
 
     # Uncomment the next line to use a non-root user for all processes.
     user: node
+  
+    depends_on:
+      - postgresql
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
-  db:
+  postgresql:
     image: postgres:13
     restart: unless-stopped
     volumes:
@@ -35,6 +42,10 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: dev
+    networks:
+      - app-network
+    ports:
+      - 5432:5432
 
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
@@ -47,12 +58,15 @@ services:
     environment:
       - DB=postgresql
       - DB_PORT=5432
-      - POSTGRES_USER=temporal
-      - POSTGRES_PWD=temporal
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=postgres
       - POSTGRES_SEEDS=postgresql
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
     image: temporalio/auto-setup:1.14.2
-    network_mode: service:db
+    networks:
+        - app-network
+    ports:
+      - 7233:7233
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
 
@@ -63,7 +77,8 @@ services:
     environment:
       - TEMPORAL_CLI_ADDRESS=temporal:7233
     image: temporalio/admin-tools:1.14.2
-    network_mode: service:db
+    networks:
+      - app-network
     stdin_open: true
     tty: true
 
@@ -75,7 +90,15 @@ services:
       - TEMPORAL_GRPC_ENDPOINT=temporal:7233
       - TEMPORAL_PERMIT_WRITE_API=true
     image: temporalio/web:1.13.0
-    network_mode: service:db
+    networks:
+      - app-network
+    ports:
+      - 8088:8088
 
 volumes:
   postgres-data:
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
