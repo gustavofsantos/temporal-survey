@@ -13,9 +13,9 @@
 			"name": "Container database",
 			"driver": "PostgreSQL",
 			"previewLimit": 50,
-			"server": "localhost",
+			"server": "postgresql",
 			"port": 5432,
-			"database": "dev",
+			"database": "survey_dev",
 			"username": "postgres",
 			"password": "postgres"
 		}]
