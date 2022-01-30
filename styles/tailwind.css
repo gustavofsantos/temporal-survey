@@ -8,7 +8,11 @@ html, body {
 }
 
 h1 {
-  @apply text-xl font-bold mb-4;
+  @apply text-4xl font-bold mb-6;
+}
+
+h2 {
+  @apply text-2xl font-bold mb-4;
 }
 
 article {
@@ -17,6 +21,10 @@ article {
 
 form {
   @apply flex flex-col space-y-4 w-full;
+}
+
+form > label {
+  @apply flex flex-col w-full space-y-1;
 }
 
 input {

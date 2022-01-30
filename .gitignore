@@ -2,6 +2,7 @@ node_modules
 
 /.cache
 /build
+/build-temporal
 /public/build
 .env
 /app/tailwind.css

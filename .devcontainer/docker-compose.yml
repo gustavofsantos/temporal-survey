@@ -6,35 +6,37 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # Update 'VARIANT' to pick an LTS version of Node.js: 16, 14, 12.
-        # Append -bullseye or -buster to pin to an OS version.
-        # Use -bullseye variants on local arm64/Apple Silicon.
         VARIANT: 16-bullseye
-
     volumes:
       - ..:/workspace:cached
-    
     environment:
+      # temporal settings
       TEMPORAL_ADDR: temporal:7233
       
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+      # email settings
+      EMAIL_PROVIDER: mailhog
+      # mailhog settings
+      MAILHOG_HOST: mailhog
+      MAILHOG_PORT: 1025
 
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    command: sleep infinity
     networks:
       - app-network
-    
     ports:
       - 3000:3000
-
-    # Uncomment the next line to use a non-root user for all processes.
     user: node
-  
     depends_on:
       - postgresql
+      - mailhog
 
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    restart: unless-stopped
+    networks:
+      - app-network
+    ports:
+      - 8025:8025
 
   postgresql:
     image: postgres:13
@@ -50,10 +52,6 @@ services:
     ports:
       - 5432:5432
 
-    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
-
-  # Temporal dependencies
   temporal:
     container_name: temporal
     depends_on:

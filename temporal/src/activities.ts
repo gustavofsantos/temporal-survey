@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { Email } from "../../app/lib/mailer";
 
 export async function storeSurveyAnswer(
   surveyId: string,
@@ -9,11 +10,17 @@ export async function storeSurveyAnswer(
 
   console.log("storing answer...");
 
-  const result = await prisma.answer.create({
+  const result = await prisma.survey.update({
+    where: {
+      id: surveyId,
+    },
     data: {
-      surveyId,
-      value: answer,
-      email,
+      answers: {
+        create: {
+          email,
+          value: answer,
+        },
+      },
     },
   });
 
@@ -25,8 +32,17 @@ export async function storeSurveyAnswer(
 }
 
 export async function sendConfirmationEmail(email: string) {
-  console.log(`sending confirmation email to ${email}...`);
-  console.log(`sending confirmation email to ${email}... OK`);
+  const emailProvider = process.env.EMAIL_PROVIDER as string;
+
+  console.log("sending email...");
+
+  await Email.select(emailProvider as any).send({
+    to: email,
+    from: "temporal-survey@email.com",
+    subject: "Thank You!",
+    body: `You rock, ${email}`,
+    type: "text",
+  });
 
   return true;
 }

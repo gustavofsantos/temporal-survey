@@ -1,6 +1,6 @@
-import { Link, LoaderFunction, useLoaderData } from "remix";
-import { SurveyLoader } from "~/lib/survey/survey-loader";
-import { db } from "~/utils/prisma";
+import { Link, useLoaderData } from "remix";
+import { SurveyLoader } from "../lib/survey/survey-loader";
+import { db } from "../utils/db";
 
 export const loader = async () => {
   const surveyLoader = new SurveyLoader(db);
@@ -13,6 +13,8 @@ export default function IndexPage() {
   return (
     <article>
       <h1>My survey</h1>
+
+      <Link to="/survey/manage">Manage surveys</Link>
 
       <ul>
         {surveys.map((survey) => (

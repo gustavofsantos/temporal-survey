@@ -1,18 +1,24 @@
 import {
   ActionFunction,
   LoaderFunction,
+  redirect,
   useActionData,
   useLoaderData,
   useParams,
 } from "remix";
-import { SurveyLoader } from "~/lib/survey/survey-loader";
-import { answer } from "~/lib/workflows/answer.server";
-import { db } from "~/utils/prisma";
+import { SurveyLoader } from "../../lib/survey/survey-loader";
+import { answer } from "../../lib/workflows/answer.server";
+import { db } from "../../utils/db";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const surveyLoader = new SurveyLoader(db);
 
-  return surveyLoader.loadById(params.id as string);
+  const survey = await surveyLoader.loadById(params.id as string);
+  if ((survey?.answers.length ?? 0) >= (survey?.limit ?? 0)) {
+    return redirect("/");
+  }
+
+  return survey;
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -56,6 +62,29 @@ export default function SurveyPage() {
           <p>Thank you!</p>
         </div>
       )}
+
+      <section className="mt-8">
+        <h2>Answers</h2>
+
+        <table className="table-auto w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>E-mail</th>
+              <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {survey.answers.map((answer: any) => (
+              <tr>
+                <td>{answer.id}</td>
+                <td>{answer.email}</td>
+                <td>{answer.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
     </article>
   );
 }

@@ -14,7 +14,7 @@
     "dev:css": "tailwindcss -i ./styles/tailwind.css -o ./app/tailwind.css --watch",
     "postinstall": "remix setup node",
     "start": "remix-serve build",
-    "start:worker": "node ./temporal/lib/worker"
+    "start:worker": "node ./build-temporal/temporal/src/worker"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -23,6 +23,7 @@
     "@prisma/client": "^3.8.1",
     "@remix-run/react": "^1.1.3",
     "@remix-run/serve": "^1.1.3",
+    "nodemailer": "^6.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "remix": "^1.1.3",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@remix-run/dev": "^1.1.3",
     "@tsconfig/node16": "^1.0.2",
+    "@types/nodemailer": "^6.4.4",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.4",

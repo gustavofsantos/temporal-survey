@@ -1,4 +1,4 @@
-import { DB } from "~/utils/prisma";
+import { DB } from "../../utils/db";
 
 export class SurveyLoader {
   constructor(private readonly db: DB) {}
@@ -16,6 +16,11 @@ export class SurveyLoader {
       select: {
         id: true,
         question: true,
+        enabled: true,
+        limit: true,
+        answers: {
+          select: { id: true, email: true, value: true },
+        },
       },
     });
   }
