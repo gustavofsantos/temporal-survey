@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const surveyLoader = new SurveyLoader(db);
 
   const survey = await surveyLoader.loadById(params.id as string);
-  if ((survey?.answers.length ?? 0) >= (survey?.limit ?? 0)) {
+  if (survey?.enabled === false) {
     return redirect("/");
   }
 

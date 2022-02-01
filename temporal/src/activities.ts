@@ -1,34 +1,21 @@
-import { PrismaClient } from "@prisma/client";
 import { Email } from "../../app/lib/mailer";
+import { Survey } from "../../app/lib/survey";
+import { db } from "../../app/utils/db";
 
 export async function storeSurveyAnswer(
   surveyId: string,
   answer: string,
   email: string
 ) {
-  const prisma = new PrismaClient();
-
-  console.log("storing answer...");
-
-  const result = await prisma.survey.update({
-    where: {
-      id: surveyId,
-    },
-    data: {
-      answers: {
-        create: {
-          email,
-          value: answer,
-        },
-      },
-    },
-  });
+  const survey = new Survey(db);
 
   console.log("storing answer... OK");
 
-  await prisma.$disconnect();
+  return survey.answer(surveyId, { value: answer, email });
+}
 
-  return result;
+export async function disableSurvey(surveyId: string) {
+  await new Survey(db).disable(surveyId);
 }
 
 export async function sendConfirmationEmail(email: string) {

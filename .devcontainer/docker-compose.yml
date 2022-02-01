@@ -10,6 +10,8 @@ services:
     volumes:
       - ..:/workspace:cached
     environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgresql:5432/survey_dev?schema=public
+
       # temporal settings
       TEMPORAL_ADDR: temporal:7233
       

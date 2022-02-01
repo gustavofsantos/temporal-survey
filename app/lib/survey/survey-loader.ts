@@ -17,7 +17,7 @@ export class SurveyLoader {
         id: true,
         question: true,
         enabled: true,
-        limit: true,
+        validSeconds: true,
         answers: {
           select: { id: true, email: true, value: true },
         },

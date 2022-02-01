@@ -1,16 +1,18 @@
 import { ActionFunction, useLoaderData, Link, redirect } from "remix";
+
 import { Survey } from "../../lib/survey";
 import { SurveyLoader } from "../../lib/survey/survey-loader";
 import { db } from "../../utils/db";
+import { SurveyValidity } from "../../../temporal/src/workflows";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const question = formData.get("question") as string;
-  const limit = formData.get("limit") as string;
+  const validSeconds = formData.get("validSeconds") as string;
 
   const { id } = await new Survey(db).create({
     question,
-    limit: parseInt(limit),
+    validSeconds: parseInt(validSeconds),
   });
 
   return redirect(`/survey/${id}/answer`);
@@ -35,11 +37,11 @@ export default function SurveysPage() {
             <input id="question-input" name="question" type="text" required />
           </label>
 
-          <label htmlFor="limit-input">
-            Limit of answers
+          <label htmlFor="valid-seconds-input">
+            Time that accept answers (in seconds)
             <input
-              id="limit-input"
-              name="limit"
+              id="valid-seconds-input"
+              name="validSeconds"
               type="number"
               min={1}
               max={1000}
