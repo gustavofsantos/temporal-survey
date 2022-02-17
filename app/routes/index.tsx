@@ -1,8 +1,8 @@
 import { Link, useLoaderData } from "remix";
-import { SurveyLoader } from "../lib/survey/survey-loader";
+import { Surveys } from "../lib";
 
 export const loader = async () => {
-  return SurveyLoader.loadAll();
+  return Surveys.listAll();
 };
 
 export default function IndexPage() {

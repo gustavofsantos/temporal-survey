@@ -1,22 +1,16 @@
 import { Email } from "../../app/lib/mailer";
-import { Survey } from "../../app/lib/survey";
-import { db } from "../../app/infra/db";
+import { Surveys } from "../../app/lib";
 
 export async function storeSurveyAnswer(
   surveyId: string,
-  answer: string,
+  value: string,
   email: string
 ) {
-  const survey = new Survey(db);
-  return survey.answer(surveyId, { value: answer, email });
+  return Surveys.answer({ surveyId, value, email });
 }
 
 export async function loadSurveyById(surveyId: string) {
-  return db.survey.findUnique({ where: { id: surveyId } });
-}
-
-export async function disableSurvey(surveyId: string) {
-  await new Survey(db).disable(surveyId);
+  return Surveys.getById(surveyId);
 }
 
 export async function sendConfirmationEmail(

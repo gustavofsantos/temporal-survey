@@ -7,11 +7,11 @@ import {
   useLoaderData,
   useParams,
 } from "remix";
-import { SurveyLoader } from "../../lib/survey/survey-loader";
 import { AnswerJob, CancelAnswerJob } from "../../infra/jobs/answer-job";
+import { Surveys } from "../../lib";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const survey = await SurveyLoader.loadById(params.id as string);
+  const survey = await Surveys.getById(params.id as string);
   if (survey?.enabled === false) {
     return redirect("/");
   }
