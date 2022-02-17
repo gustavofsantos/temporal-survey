@@ -17,18 +17,12 @@ npm run dev
 
 This starts your app in development mode, rebuilding assets on file changes and running temporal worker.
 
-## Deployment
+To have an active survey, run the command `npx prisma db seed`.
 
-First, build your app for production:
+## Ports
 
-```sh
-npm run build
-```
+Those ports will be mapped into your operating system:
 
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
+- `http://localhost:3000`: The application
+- `http://localhost:8088`: Temporal dashboard
+- `http://localhost:8025`: Mailhog dashboard

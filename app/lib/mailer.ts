@@ -1,5 +1,5 @@
-import { MailHogProvider } from "./mailer/providers/mailhog";
-import type { EmailProvider } from "./mailer/email-provider";
+import { MailHogProvider } from "../infra/mailer/providers/mailhog";
+import type { EmailProvider } from "../infra/mailer/email-provider";
 
 type Provider = "mailhog";
 

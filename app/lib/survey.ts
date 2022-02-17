@@ -1,9 +1,8 @@
-import type { DB } from "../utils/db";
-import { startSurveyValidityWorkflow } from "./workflows/survey.server";
+import type { DB } from "../infra/db";
 
 type CreateSurveyData = {
   question: string;
-  validSeconds: number;
+  limit: number;
 };
 
 type AnswerSurveyData = {
@@ -18,17 +17,12 @@ export class Survey {
     const survey = await this.db.survey.create({
       data: {
         question: data.question,
-        validSeconds: data.validSeconds,
+        limit: data.limit,
       },
       select: {
         id: true,
         question: true,
       },
-    });
-
-    await startSurveyValidityWorkflow({
-      surveyId: survey.id,
-      validSeconds: data.validSeconds,
     });
 
     return survey;
@@ -47,8 +41,11 @@ export class Survey {
     const survey = await this.db.survey.findUnique({ where: { id: surveyId } });
     if (survey?.enabled === false) {
       console.error("Unable to answer an disabled survey.");
-      return;
+      return false;
     }
+
+    const isAbleToAnswer = await this.isAbleToAnswer(surveyId);
+    if (!isAbleToAnswer) return false;
 
     await this.db.survey.update({
       where: { id: surveyId },
@@ -61,6 +58,16 @@ export class Survey {
         },
       },
     });
+
+    return true;
+  }
+
+  private async isAbleToAnswer(surveyId: string) {
+    const survey = await this.db.survey.findUnique({
+      where: { id: surveyId },
+      include: { answers: true },
+    });
+    return !!survey && survey.limit > survey.answers?.length;
   }
 
   async disable(surveyId: string) {

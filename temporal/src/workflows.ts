@@ -1,41 +1,49 @@
 import * as wf from "@temporalio/workflow";
 import type * as activities from "./activities";
 
-const { storeSurveyAnswer, sendConfirmationEmail, disableSurvey } =
-  wf.proxyActivities<typeof activities>({
-    startToCloseTimeout: "1 minute",
-  });
+const {
+  storeSurveyAnswer,
+  loadSurveyById,
+  sendConfirmationEmail,
+  sendCancelationEmail,
+} = wf.proxyActivities<typeof activities>({
+  startToCloseTimeout: "1 minute",
+});
 
-type SurveyAnsweredData = {
+export const cancelAnswer = wf.defineSignal("cancelAnswer");
+
+type AnswerState = "PENDING" | "CANCELLED" | "CONFIRMED";
+
+type AnswerSurveData = {
   surveyId: string;
   answer: string;
   email: string;
-  validSeconds: number;
 };
 
-type SurveyValidityData = {
-  surveyId: string;
-  validSeconds: number;
-};
-
-export async function SurveyAnswered({
+export async function AnswerSurvey({
   surveyId,
   answer,
   email,
-}: SurveyAnsweredData) {
-  await storeSurveyAnswer(surveyId, answer, email);
+}: AnswerSurveData) {
+  let state: AnswerState = "PENDING";
+  const survey = await loadSurveyById(surveyId);
 
-  await wf.sleep("10s");
+  wf.setHandler(cancelAnswer, () => {
+    state = "CANCELLED";
+  });
 
-  await sendConfirmationEmail(email);
-}
+  const isCancelled = await wf.condition(() => state === "CANCELLED", "1m");
+  if (isCancelled) {
+    await sendCancelationEmail(email);
+    return;
+  }
 
-export async function SurveyValidity({
-  surveyId,
-  validSeconds,
-}: SurveyValidityData) {
-  console.log(`Waiting ${validSeconds}s to disable survey ${surveyId}`);
-  await wf.sleep(`${validSeconds}s`);
+  const answerSuccessfully = await storeSurveyAnswer(surveyId, answer, email);
 
-  await disableSurvey(surveyId);
+  if (answerSuccessfully) {
+    await wf.sleep("2m");
+    await sendConfirmationEmail(email, { question: survey!.question, answer });
+  } else {
+    // enviar algum outro e-mail indicando que a resposta não foi armazenada
+  }
 }
