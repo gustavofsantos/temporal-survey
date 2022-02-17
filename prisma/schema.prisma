@@ -11,21 +11,19 @@ datasource db {
 }
 
 model Survey {
-  id           String   @id @default(cuid())
-  question     String
-  validSeconds Int      @default(30)
-  enabled      Boolean  @default(true)
-  createdAt    DateTime @default(now())
-
-  answers Answer[]
+  id        String   @id @default(cuid())
+  question  String
+  limit     Int      @default(10)
+  enabled   Boolean  @default(true)
+  answers   Answer[]
+  createdAt DateTime @default(now())
 }
 
 model Answer {
   id        String   @id @default(cuid())
   value     String
   email     String
+  surveyId  String
+  survey    Survey   @relation(fields: [surveyId], references: [id])
   createdAt DateTime @default(now())
-
-  surveyId String
-  survey   Survey @relation(fields: [surveyId], references: [id])
 }

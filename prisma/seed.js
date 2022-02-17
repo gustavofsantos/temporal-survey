@@ -1,10 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const db = new PrismaClient();
 
 async function run() {
-  await prisma.survey.create({
+  await db.answer.deleteMany();
+  await db.survey.deleteMany();
+
+  await db.survey.create({
     data: {
       question: "This is ok for you?",
+      limit: 5,
     },
   });
 }
