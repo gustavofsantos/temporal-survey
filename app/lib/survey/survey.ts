@@ -1,7 +1,7 @@
 import { db } from "../../infra/db";
 
 export class Survey {
-  static create({ question, limit }) {
+  static create({ question, limit }: { question: string; limit: number }) {
     return db.survey.create({
       data: {
         question,
@@ -10,16 +10,16 @@ export class Survey {
     });
   }
 
-  static get(surveyId, { answers = true } = {}) {
+  static get(surveyId: string) {
     return db.survey.findUnique({
       where: { id: surveyId },
-      include: { answers },
+      include: { answers: true },
     });
   }
 
-  static listAll({ answers = true } = {}) {
+  static listAll() {
     return db.survey.findMany({
-      include: { answers },
+      include: { answers: true },
       orderBy: { createdAt: "desc" },
     });
   }

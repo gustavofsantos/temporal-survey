@@ -2,19 +2,27 @@ import { Answer } from "./survey/answer";
 import { Survey } from "./survey/survey";
 
 export class Surveys {
-  static create({ question, limit }) {
+  static create({ question, limit }: { question: string; limit: number }) {
     return Survey.create({ question, limit });
   }
 
-  static async getById(surveyId) {
+  static async getById(surveyId: string) {
     return Survey.get(surveyId);
   }
 
-  static listAll(options?) {
-    return Survey.listAll({ answers: options?.includes?.answers });
+  static listAll() {
+    return Survey.listAll();
   }
 
-  static async answer({ surveyId, value, email }) {
+  static async answer({
+    surveyId,
+    value,
+    email,
+  }: {
+    surveyId: string;
+    value: string;
+    email: string;
+  }) {
     const survey = await Survey.get(surveyId);
     if (!survey) throw new Error("Survey not found.");
 

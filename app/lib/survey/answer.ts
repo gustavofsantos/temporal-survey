@@ -1,7 +1,15 @@
 import { db } from "../../infra/db";
 
 export class Answer {
-  static create({ surveyId, value, email }) {
+  static create({
+    surveyId,
+    value,
+    email,
+  }: {
+    surveyId: string;
+    value: string;
+    email: string;
+  }) {
     return db.answer.create({
       data: {
         surveyId,
@@ -11,7 +19,7 @@ export class Answer {
     });
   }
 
-  static answersOfSurvey(surveyId) {
+  static answersOfSurvey(surveyId: string) {
     return db.answer.findMany({ where: { surveyId } });
   }
 
