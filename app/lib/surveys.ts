@@ -38,5 +38,6 @@ export class Surveys {
     }
 
     await Answer.create({ surveyId, value, email });
+    return true;
   }
 }
